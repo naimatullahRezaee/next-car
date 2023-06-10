@@ -7,6 +7,9 @@ const CustomButton = ({
   containerStyles,
   handleClick,
   btnType,
+  textStyles,
+  isDisabled,
+  rightIcon,
 }: CustomButtonPorps) => {
   return (
     <button
@@ -15,7 +18,17 @@ const CustomButton = ({
       disabled={false}
       type={btnType || "button"}
     >
-      <span className={`flex-1`}>{title} </span>
+      <span className={`flex-1 ${textStyles}`}>{title} </span>
+      {rightIcon && (
+        <div className="relative w-6 h-6">
+          <Image
+            src={rightIcon}
+            alt="right icon"
+            fill
+            className="object-contain"
+          />
+        </div>
+      )}
     </button>
   );
 };
