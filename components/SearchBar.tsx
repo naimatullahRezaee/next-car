@@ -1,10 +1,55 @@
 "use client";
 import { useState } from "react";
 import SearchManufacturer from "./SearchManufacturer";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+const SearchButton = ({ otherClasses }: { otherClasses: string }) => (
+  <button type="button" className={`-ml-3 z-10 ${otherClasses}`}>
+    <Image
+      src="/magnifying-glass.svg"
+      alt="magnifying image"
+      width={40}
+      height={40}
+      className="object-contain"
+    />
+  </button>
+);
 
 const SearchBar = () => {
+  const [model, setModel] = useState("");
   const [manufacturer, setManuFacturer] = useState("");
   const handleSubmit = () => {};
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (manufacturer === "" && model === "") {
+      return alert("Please fill in the Search bar");
+    }
+    updateSearchParms(model.toLowerCase(), manufacturer.toLowerCase());
+  };
+  const updateSearchParms = (model: string, manufacturer: string) => {
+    const searchParams = new URLSearchParams(window.location.search);
+
+    if (model) {
+      searchParams.set("model", model);
+    } else {
+      searchParams.delete("model");
+    }
+    if (manufacturer) {
+      searchParams.set("manufacturer", manufacturer);
+    } else {
+      searchParams.delete("manufacturer");
+    }
+
+    const newPathname = `${
+      window.location.pathname
+    }?${searchParams.toString()}`;
+
+    router.push(newPathname);
+  };
+
   return (
     <form className="searchBar" onSubmit={handleSubmit}>
       <div className="searchBar__item">
@@ -12,7 +57,27 @@ const SearchBar = () => {
           manufacturer={manufacturer}
           setManuFacturer={setManuFacturer}
         />
+        <SearchButton otherClasses="sm:hidden" />
       </div>
+      <div className="searchbar__item">
+        <Image
+          src="/model-icon.png"
+          width={25}
+          height={25}
+          className="absolute w-[20px] h-[20px] ml-4"
+          alt="car modal"
+        />
+        <input
+          type="text"
+          name="modal"
+          value={model}
+          onChange={(e) => setModel(e.target.value)}
+          className="searchbar__input"
+        />
+        <SearchButton otherClasses="sm:hidden" />
+      </div>
+
+      <SearchButton otherClasses="max-sm:hidden" />
     </form>
   );
 };
